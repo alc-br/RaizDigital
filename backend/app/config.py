@@ -20,7 +20,7 @@ class Settings(BaseSettings):
     """Configuration values loaded from environment variables."""
 
     # Database
-    database_url: str = "postgresql+asyncpg://postgres:postgres@db:5432/raizdigital"
+    database_url: str = "postgresql+asyncpg://postgres:q7z9p1m3aGmT@db:5432/raizdigital"
 
     # Security
     secret_key: str = "CHANGE_ME"

@@ -11,7 +11,6 @@ from datetime import datetime
 from typing import List, Optional
 
 from sqlalchemy import (
-    Column,
     Integer,
     String,
     DateTime,
@@ -20,7 +19,7 @@ from sqlalchemy import (
     Float,
     Text,
 )
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, Mapped, mapped_column
 
 from .database import Base
 
@@ -48,14 +47,14 @@ class User(Base):
 
     __tablename__ = "users"
 
-    id: int = Column(Integer, primary_key=True, index=True)
-    email: str = Column(String(255), unique=True, nullable=False, index=True)
-    password_hash: str = Column(String(255), nullable=False)
-    full_name: Optional[str] = Column(String(255))
-    created_at: datetime = Column(DateTime, default=datetime.utcnow, nullable=False)
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False, index=True)
+    password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
+    full_name: Mapped[Optional[str]] = mapped_column(String(255))
+    created_at: Mapped[datetime] = mapped_column(default=datetime.utcnow, nullable=False)
 
-    orders: List["SearchOrder"] = relationship(
-        "SearchOrder", back_populates="user", cascade="all, delete-orphan"
+    orders: Mapped[List["SearchOrder"]] = relationship(
+        back_populates="user", cascade="all, delete-orphan"
     )
 
 
@@ -64,23 +63,23 @@ class SearchOrder(Base):
 
     __tablename__ = "search_orders"
 
-    id: int = Column(Integer, primary_key=True, index=True)
-    user_id: int = Column(Integer, ForeignKey("users.id"), nullable=False)
-    status: OrderStatus = Column(Enum(OrderStatus), default=OrderStatus.PENDING_PAYMENT, nullable=False)
-    order_price: float = Column(Float, default=0.0, nullable=False)
-    target_name: str = Column(String(255), nullable=False)
-    target_dob_approx: Optional[str] = Column(String(50))
-    target_city: Optional[str] = Column(String(100))
-    target_state: Optional[str] = Column(String(100))
-    target_parents_names: Optional[str] = Column(String(255))
-    additional_info: Optional[Text] = Column(Text)
-    created_at: datetime = Column(DateTime, default=datetime.utcnow, nullable=False)
-    completed_at: Optional[datetime] = Column(DateTime)
-    stripe_session_id: Optional[str] = Column(String(255))
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
+    status: Mapped[OrderStatus] = mapped_column(Enum(OrderStatus), default=OrderStatus.PENDING_PAYMENT, nullable=False)
+    order_price: Mapped[float] = mapped_column(Float, default=0.0, nullable=False)
+    target_name: Mapped[str] = mapped_column(String(255), nullable=False)
+    target_dob_approx: Mapped[Optional[str]] = mapped_column(String(50))
+    target_city: Mapped[Optional[str]] = mapped_column(String(100))
+    target_state: Mapped[Optional[str]] = mapped_column(String(100))
+    target_parents_names: Mapped[Optional[str]] = mapped_column(String(255))
+    additional_info: Mapped[Optional[str]] = mapped_column(Text) # Use Optional[str] for Text column
+    created_at: Mapped[datetime] = mapped_column(default=datetime.utcnow, nullable=False)
+    completed_at: Mapped[Optional[datetime]] = mapped_column(DateTime)
+    stripe_session_id: Mapped[Optional[str]] = mapped_column(String(255))
 
-    user: User = relationship("User", back_populates="orders")
-    results: List["SearchResult"] = relationship(
-        "SearchResult", back_populates="order", cascade="all, delete-orphan"
+    user: Mapped["User"] = relationship(back_populates="orders")
+    results: Mapped[List["SearchResult"]] = relationship(
+        back_populates="order", cascade="all, delete-orphan"
     )
 
 
@@ -89,15 +88,15 @@ class SearchResult(Base):
 
     __tablename__ = "search_results"
 
-    id: int = Column(Integer, primary_key=True, index=True)
-    order_id: int = Column(Integer, ForeignKey("search_orders.id"), nullable=False)
-    source_name: str = Column(String(255), nullable=False)
-    status: ResultStatus = Column(Enum(ResultStatus), nullable=False)
-    found_data_json: Optional[Text] = Column(Text)
-    screenshot_path: Optional[str] = Column(String(255))
-    timestamp: datetime = Column(DateTime, default=datetime.utcnow, nullable=False)
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    order_id: Mapped[int] = mapped_column(ForeignKey("search_orders.id"), nullable=False)
+    source_name: Mapped[str] = mapped_column(String(255), nullable=False)
+    status: Mapped[ResultStatus] = mapped_column(Enum(ResultStatus), nullable=False)
+    found_data_json: Mapped[Optional[str]] = mapped_column(Text) # Use Optional[str] for Text column
+    screenshot_path: Mapped[Optional[str]] = mapped_column(String(255))
+    timestamp: Mapped[datetime] = mapped_column(default=datetime.utcnow, nullable=False)
 
-    order: SearchOrder = relationship("SearchOrder", back_populates="results")
+    order: Mapped["SearchOrder"] = relationship(back_populates="results")
 
 
 class PasswordResetToken(Base):
@@ -105,10 +104,10 @@ class PasswordResetToken(Base):
 
     __tablename__ = "password_reset_tokens"
 
-    id: int = Column(Integer, primary_key=True, index=True)
-    user_id: int = Column(Integer, ForeignKey("users.id"), nullable=False)
-    token: str = Column(String(255), unique=True, nullable=False)
-    expires_at: datetime = Column(DateTime, nullable=False)
-    created_at: datetime = Column(DateTime, default=datetime.utcnow, nullable=False)
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
+    token: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
+    expires_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(default=datetime.utcnow, nullable=False)
 
-    user: User = relationship("User")
+    user: Mapped["User"] = relationship()
