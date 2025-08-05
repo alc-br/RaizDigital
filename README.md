@@ -163,3 +163,6 @@ npx serve -s dist
 
 ### Se quiser aplicar as migrações do banco
 docker exec -it raizdigital_backend alembic upgrade head
+
+
+### Git
