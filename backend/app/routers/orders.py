@@ -10,6 +10,8 @@ database.
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+# Importa selectinload para carregamento eager de relacionamentos
+from sqlalchemy.orm import selectinload
 
 from .. import models, schemas
 from ..database import get_session
@@ -39,7 +41,10 @@ async def create_order(
     )
     session.add(order)
     await session.commit()
-    await session.refresh(order)
+    # CORREÇÃO: Após criar o pedido, fazemos o refresh da instância
+    # carregando explicitamente o relacionamento 'results' (que estará vazio).
+    # Isso evita o erro de lazy-loading durante a serialização da resposta.
+    await session.refresh(order, attribute_names=["results"])
     return order
 
 
@@ -49,8 +54,14 @@ async def list_orders(
     session: AsyncSession = Depends(get_session),
 ):
     """List all search orders belonging to the authenticated user."""
+    # CORREÇÃO: Adicionado .options(selectinload(models.SearchOrder.results))
+    # para carregar os resultados de cada pedido de forma "eager",
+    # prevenindo o erro de lazy-loading.
     result = await session.execute(
-        select(models.SearchOrder).where(models.SearchOrder.user_id == current_user.id).order_by(models.SearchOrder.created_at.desc())
+        select(models.SearchOrder)
+        .options(selectinload(models.SearchOrder.results))
+        .where(models.SearchOrder.user_id == current_user.id)
+        .order_by(models.SearchOrder.created_at.desc())
     )
     orders = result.scalars().all()
     return orders
@@ -63,7 +74,16 @@ async def get_order_detail(
     session: AsyncSession = Depends(get_session),
 ):
     """Retrieve detailed information about a specific order and its results."""
-    order = await session.get(models.SearchOrder, order_id)
+    # CORREÇÃO: Substituído session.get() por uma query com selectinload
+    # para carregar o pedido e seus resultados de uma só vez,
+    # evitando o erro de lazy-loading.
+    result = await session.execute(
+        select(models.SearchOrder)
+        .options(selectinload(models.SearchOrder.results))
+        .where(models.SearchOrder.id == order_id)
+    )
+    order = result.scalar_one_or_none()
+    
     if not order or order.user_id != current_user.id:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
     return order

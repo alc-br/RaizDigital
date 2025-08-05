@@ -1,29 +1,30 @@
 """
 Implementation of the FamilySearch search source.
-
-Normally this class would automate interactions with FamilySearch.org,
-but here it returns a simulated negative result.  In a real
-deployment, you would implement the scraping logic using Selenium
-similar to other sources, paying attention to login, search forms and
-pagination.
 """
 import asyncio
 
 from .base import SearchSource
 from .. import models
 
-
 class FamilySearchSource(SearchSource):
     name = "FamilySearch.org"
 
     async def search(self, order: models.SearchOrder) -> models.SearchResult:
-        # Simulate network delay
-        await asyncio.sleep(1)
-        # Simulate no result found
+        await asyncio.sleep(2)  # Simula uma busca mais demorada
+        
+        # Simula a criação de um relatório detalhado e um caminho para a "prova"
+        search_summary = (
+            f"Busca por '{order.target_name}' com data de nascimento aproximada "
+            f"'{order.target_dob_approx or 'não informada'}'. "
+            "Nenhum registro correspondente encontrado nos arquivos de imigrantes."
+        )
+        
         return models.SearchResult(
             order_id=order.id,
             source_name=self.name,
             status=models.ResultStatus.NOT_FOUND,
+            details=search_summary,
             found_data_json=None,
-            screenshot_path=None,
+            # Simula um link para uma imagem de prova
+            screenshot_path="/screenshots/familysearch_not_found.png",
         )

@@ -92,6 +92,7 @@ class SearchResult(Base):
     order_id: Mapped[int] = mapped_column(ForeignKey("search_orders.id"), nullable=False)
     source_name: Mapped[str] = mapped_column(String(255), nullable=False)
     status: Mapped[ResultStatus] = mapped_column(Enum(ResultStatus), nullable=False)
+    details: Mapped[Optional[str]] = mapped_column(Text)
     found_data_json: Mapped[Optional[str]] = mapped_column(Text) # Use Optional[str] for Text column
     screenshot_path: Mapped[Optional[str]] = mapped_column(String(255))
     timestamp: Mapped[datetime] = mapped_column(default=datetime.utcnow, nullable=False)

@@ -88,6 +88,7 @@ class SearchResultCreate(BaseModel):
     order_id: int
     source_name: str
     status: ResultStatusEnum
+    details: Optional[str] = None
     found_data_json: Optional[str] = None
     screenshot_path: Optional[str] = None
 
@@ -98,6 +99,7 @@ class SearchResultOut(BaseModel):
     id: int
     source_name: str
     status: ResultStatusEnum
+    details: Optional[str]
     found_data_json: Optional[str]
     screenshot_path: Optional[str]
     timestamp: datetime
