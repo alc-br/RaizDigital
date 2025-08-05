@@ -142,3 +142,24 @@ O RaizDigital foi pensado para acompanhar o usuário em toda a sua jornada, desd
 ## Observações
 
 Esta implementação inclui um robô de busca simplificado que devolve resultados simulados em vez de realmente acessar os portais externos.  Para uso real em produção, implemente a lógica de scraping em `backend/app/robots/*` utilizando Selenium e BeautifulSoup, respeitando os termos de uso dos sites e considerando técnicas de retenção de sessão, espera por elementos e tratamento de erros.  Os endpoints internos e o Celery foram pensados para que essa substituição seja transparente para o restante da plataforma.
+
+
+## Como rodar
+
+### Rodar Backend
+cd backend
+docker compose up --build
+
+### Rodar Frontend
+cd frontend
+yarn install
+yarn dev
+
+### Rodar
+cd frontend
+npm install
+npm run build
+npx serve -s dist
+
+### Se quiser aplicar as migrações do banco
+docker exec -it raizdigital_backend alembic upgrade head

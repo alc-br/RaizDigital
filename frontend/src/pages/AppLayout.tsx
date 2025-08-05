@@ -47,6 +47,9 @@ export default function AppLayout() {
           <ListItem button component={Link} to="/app/perfil">
             <ListItemText primary="Meu Perfil" />
           </ListItem>
+          <ListItem button component={Link} to="/novo-pedido">
+            <ListItemText primary="Nova Busca" />
+          </ListItem>
         </List>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>

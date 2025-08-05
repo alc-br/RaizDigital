@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import { Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
 import NewOrderPage from './pages/NewOrderPage';
 import CheckoutPage from './pages/CheckoutPage';
@@ -13,14 +13,24 @@ import ResetPasswordPage from './pages/ResetPasswordPage';
 import ProfilePage from './pages/ProfilePage';
 import AppLayout from './pages/AppLayout';
 import { useAuthStore } from './store/useAuthStore';
+import { ReactNode } from 'react';
 
-function ProtectedRoute({ children }: { children?: React.ReactNode }) {
+interface ProtectedRouteProps {
+  children?: ReactNode;
+}
+
+function ProtectedRoute({ children }: ProtectedRouteProps) {
   const token = useAuthStore((state) => state.token);
+  const location = useLocation();
+
   if (!token) {
-    return <Navigate to="/login" replace />;
+    const redirectUrl = encodeURIComponent(location.pathname + location.search);
+    return <Navigate to={`/login?next=${redirectUrl}`} replace />;
   }
+
   return children ? <>{children}</> : <Outlet />;
 }
+
 
 export default function App() {
   return (
