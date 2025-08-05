@@ -1,0 +1,76 @@
+# Arquivo .gitignore para o projeto RAIZDIGITAL
+
+# ----------------------------------------------------------------
+# Arquivos e pastas do Python / Backend
+# ----------------------------------------------------------------
+
+# Pasta do ambiente virtual do Python
+venv/
+
+# Cache do Python e arquivos compilados
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Pastas de distribuição e build
+build/
+dist/
+*.egg-info/
+
+
+# ----------------------------------------------------------------
+# Arquivos e pastas do Node.js / Frontend
+# ----------------------------------------------------------------
+
+# Pasta de dependências do Node.js
+frontend/node_modules/
+node_modules/
+
+# Pasta de build do projeto frontend (Vite/React/Vue)
+frontend/dist/
+
+# Logs de depuração
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+
+# ----------------------------------------------------------------
+# Arquivos de Ambiente e Configurações Sensíveis
+# ----------------------------------------------------------------
+
+# Ignora todos os arquivos .env, que contêm segredos e chaves de API
+# NUNCA envie estes arquivos para o repositório.
+.env
+backend/.env
+frontend/.env
+
+# Adiciona uma exceção para o arquivo de exemplo, que PODE ser versionado
+!/.env.example
+
+
+# ----------------------------------------------------------------
+# Configurações de IDEs e editores
+# ----------------------------------------------------------------
+.vscode/
+.idea/
+.DS_Store
+.ipython/
+.rsync-tmp/
+
+
+# ----------------------------------------------------------------
+# Arquivos de Log e Compactados
+# ----------------------------------------------------------------
+*.log
+*.log.*
+
+# Arquivos temporários e backups
+*.swp
+*~
+
+# Ignorar arquivos compactados que não devem estar no controle de versão
+*.tar.gz
+*.zip
+*.rar
